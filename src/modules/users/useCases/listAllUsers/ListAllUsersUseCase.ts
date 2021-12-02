@@ -6,10 +6,22 @@ interface IRequest {
 }
 
 class ListAllUsersUseCase {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(private usersRepository: IUsersRepository) { }
 
   execute({ user_id }: IRequest): User[] {
-    // Complete aqui
+    const adminUser = this.usersRepository.findById(user_id);
+    if (!adminUser) {
+      throw new Error(
+        "should not be able to a non existing user get list of all users"
+      );
+    }
+    if (!adminUser.admin) {
+      throw new Error(
+        "should not be able to a non admin user get list of all users"
+      );
+    }
+    const users = this.usersRepository.list();
+    return users;
   }
 }
 
